@@ -4,21 +4,132 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events</title>
+    <title>Events | {{ event.name }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+          }
+          
+          *, *::before, *::after {
+            box-sizing: border-box;
+          }
+          
+          @-webkit-keyframes rotate {
+            100% {
+              transform: rotate(1turn);
+            }
+          }
+          
+          @keyframes rotate {
+            100% {
+              transform: rotate(1turn);
+            }
+          }
+          .conic {
+            position: relative;
+            z-index: 0;
+            width: 800px;
+            height: 80%;
+            margin: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 2rem;
+          }
+          .conic::before {
+            content: "";
+            position: absolute;
+            z-index: -2;
+            left: -50%;
+            top: -50%;
+            width: 200%;
+            height: 200%;
+            background-color: #1a232a;
+            background-repeat: no-repeat;
+            background-position: 0 0;
+            background-image: conic-gradient(transparent, #a8efff, transparent 30%);
+            -webkit-animation: rotate 4s linear infinite;
+                    animation: rotate 4s linear infinite;
+          }
+          .conic::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            left: 6px;
+            top: 6px;
+            width: calc(100% - 12px);
+            height: calc(100% - 12px);
+            background: #000;
+            border-radius: 5px;
+          }
+          
+          .conic-demo::after {
+            -webkit-animation: opacityChange 5s infinite linear;
+                    animation: opacityChange 5s infinite linear;
+          }
+          
+          @-webkit-keyframes opacityChange {
+            50% {
+              opacity: 0.5;
+            }
+            100% {
+              opacity: 1;
+            }
+          }
+          
+          @keyframes opacityChange {
+            50% {
+              opacity: 0.5;
+            }
+            100% {
+              opacity: 1;
+            }
+          }
+          #table {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #eee;
+          }
+          #btn-go-back {
+            margin-left: 10px;
+          }
+    </style>
 </head>
 <body>
-    <section class=section>
-        <div class=container >
-            <h1 class=title>{{event.name}}</h1>
-            <p>category: {{event.category}}</p>
-            {% if event.local %}
-                <p>local: {{event.local}}</p>
-            {% endif %}
-            {% if event.link %}
-                <p>link: <a href="{{event.link}}" title="link {{event.name}}">{{event.link}}</a></p>
-            {% endif %}
-        </div>
-    </section>
+    <div class="conic">
+        <section class=section>
+            <div class=container >
+                <h1 class=title>{{ event.name }}</h1>
+                <p>Category: {{ event.category.name }}</p>
+                {% if event.local %}
+                    <p>Local: {{ event.local }}</p>
+                {% endif %}
+                {% if event.link %}
+                    <p>Link: <a href="{{ event.link }}" title="link {{ event.name }}">{{ event.link }}</a></p>
+                {% endif %}
+                <p>Date: 
+                    {% if event.date %}
+                        {{ event.date | date:'d/m/Y' }}
+                    {% else %}
+                        to be defined.
+                    {% endif %}
+                </p>
+                <p>Participants: {{ event.participants }}</p>
+                <br />
+                <div class="buttons">
+                    <form action="{% url 'enjoy_event' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="event_id" value="{{ event.id }}">
+                        <input type="submit" value="Enjoy" class="button is-success">
+                    </form>
+                    <p><a href="{% url 'list-events' %}" class="button is-danger" id="btn-go-back">Go to event list.</a></p>
+                      <!--href="/"-->
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
 </html>

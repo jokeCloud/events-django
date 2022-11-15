@@ -15,6 +15,7 @@ class Event(models.Model):
     local = models.CharField(max_length=256, blank=True)
     link = models.CharField(max_length=256, blank=True)
     date = models.DateField(null=True)
+    participants = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.name} ({self.id})'

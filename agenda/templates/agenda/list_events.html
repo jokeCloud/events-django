@@ -120,7 +120,8 @@
                                 to be defined.
                             {% endif %}
                         </td>
-                        <td><a href="#" target="_blank">details</a></td>
+                        <td><a href="{% url 'show-event' event.id %}">details</a></td>
+                           <!--href="event/{{ event.id }}" -->                                       
                     </tr>
                 {% endfor %}
             </tbody>

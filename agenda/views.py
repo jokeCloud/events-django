@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from agenda.models import Event
 
@@ -14,14 +16,21 @@ def list_events(request):
     )  # noqa
 
 
-def show_event(request):
-    event = {
-        'name': 'Python class',
-        'category': 'backend',
-        'local': 'Louisiana',
-    }
-    # template = loader.get_template('agenda/show_event.html')
-    # rendered_template = template.render(
-    #    context={'event': event}, request=request)
-    # return HttpResponse(rendered_template)
-    return render(request=request, context={'event': event}, template_name='agenda/show_event.html')  # noqa
+def show_event(request, id):
+    event = get_object_or_404(Event, id=id)
+    event = Event.objects.get(id=id)
+    return render(
+        request=request,
+        context={'event': event},
+        template_name='agenda/show_event.html'
+    )  # noqa
+
+
+def enjoy_event(request):
+    event_id = request.POST.get('event_id')
+    event = get_object_or_404(Event, id=event_id)
+    event.participants += 1
+    event.save()
+
+    return HttpResponseRedirect(reverse('show-event', args=(event.id, )))
+    # f'/event/{event.id}'
