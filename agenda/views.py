@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -8,12 +10,18 @@ from agenda.models import Event
 
 
 def list_events(request):
+    events = Event.objects.exclude(
+        date__lt=date.today()
+    )
+    return render(request, 'agenda/list_events.html', context={'events': events})  # noqa
+    """
     events = Event.objects.all()
     return render(
         request=request,
         context={'events': events},
         template_name='agenda/list_events.html'
     )  # noqa
+    """
 
 
 def show_event(request, id):
